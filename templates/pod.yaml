@@ -57,10 +57,7 @@ spec:
 {{- end }}
 {{- if and (.Values.deployment.db.passwordSecret) (.Values.deployment.db.passwordSecretKey) }}
         - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.deployment.db.passwordSecret }}
-              key: {{ .Values.deployment.db.passwordSecretKey }}
+          value: "root1234"
 {{- end }}
 {{- if .Values.deployment.db.url }}
         - name: DB_URL
