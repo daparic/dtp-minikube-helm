@@ -33,12 +33,12 @@ deployment:
 # the secret will not reflect inside the container unless it is restarted. Note that the DB_TYPE, DB_USER, DB_PASSWORD, and DB_URL
 # environment variables will override the equivalent persisted values in the PSTRootConfig.xml each time the container/pod is restarted.
   db:
-    type:                                                         # Type must be one of: "mysql" | "oracle" | "postgresql"
-    user:                                                         # User must already exist with any necessary permissions granted to access the database
-    passwordSecret:                                               # Name of the secret created for the database user password
-    passwordSecretKey:                                            # Key for the database user password value specified for the secret
-    url:                                                          # The database specified in the URL must already exist, whether it is empty or already has initialized schema
-    jdbcDriverUrl:                                                # Download URL for the JDBC driver compatible with the database type and version being used
+    type: "mysql"                                                 # Type must be one of: "mysql" | "oracle" | "postgresql"
+    user: "root"
+    passwordSecret: mysql-secret                                # Name of the secret created for the database user password
+    passwordSecretKey: password                                 # Key for the database user password value specified for the secret
+    url: "jdbc:mysql://10.96.201.75:3306/dtp"                  # The database specified in the URL must already exist, whether it is empty or already has initialized schema
+    jdbcDriverUrl: "https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar"
   healthcheck:
     enabled: true
   restartPolicy: Always
@@ -51,22 +51,22 @@ service:
   depNodePort: 30314                                              # Use any free port within the range 30000-32767
 
 persistence:
-  name:                                                           # Set the name of the persistent volume claim you will be using
+  name: dtp-pvc                                                   # Set the name of the persistent volume claim you will be using
 
 # The following are example persistence values for a 2GB persistent volume claim which can be of type hostpath or nfs.
 # These values are used by the "pv.yaml", "pvc.yaml", and "storageclass.yaml" example templates, which are meant to
 # show how you can define your own persistent volume, persistent volume claim, and storage class. You may remove or
 # modify the values and templates to fit your own deployment needs.
-#  type: hostpath
+  type: hostpath
 #  type: nfs
-#  storageClassName: dtp-storage
-#  accessMode: ReadWriteOnce
-#  capacity: 2Gi
+  storageClassName: dtp-storage
+  accessMode: ReadWriteOnce
+  capacity: 10Gi
 
 # The following are example hostpath and nfs specific values used by the "pv.yaml" and "pvc.yaml" example templates.
 # You may remove or modify the values and templates to fit your own deployment needs.
-#hostpath:
-#  path: "/path/to/volume"
+hostpath:
+  path: "/dtp_data"
 
 #nfs:
 #  server: "nfs-server.example.com"
