@@ -1,0 +1,16 @@
+# The following is an example persistent volume claim template that uses the example persistence values in
+# the "values.yaml". You may remove or modify the values and templates to fit your own deployment needs.
+{{- if or (eq "hostpath" .Values.persistence.type) (eq "nfs" .Values.persistence.type) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClassName }}
+  accessModes:
+    - {{ .Values.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.capacity }}
+{{- end }}

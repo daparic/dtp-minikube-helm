@@ -1,0 +1,38 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: dtp-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  selector:
+    app: DTP
+  ports:
+    - name: "http-port"
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: {{ .Values.service.httpNodePort }}
+    - name: "https-port"
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+      nodePort: {{ .Values.service.httpsNodePort }}
+    - name: "dc-port"
+      protocol: TCP
+      port: 8082
+      targetPort: 8082
+      nodePort: {{ .Values.service.dcNodePort }}
+{{- if .Values.deployment.extensionDesigner.enabled }}
+    - name: "dep-port"
+      protocol: TCP
+      port: 8314
+      targetPort: 8314
+      nodePort: {{ .Values.service.depNodePort }}
+{{- end }}
+# SERVICE CONFIG NOTES:
+# 'name' can be whatever you want
+# 'nodePort' must be between 30000-32768
+# 'spec.selector' must match 'metadata.labels' in pod config
+{{- end }}

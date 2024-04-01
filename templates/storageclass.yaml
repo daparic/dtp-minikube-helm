@@ -1,0 +1,11 @@
+# The following is an example storage class template that uses the example persistence values in
+# the "values.yaml". You may remove or modify the values and templates to fit your own deployment needs.
+{{- if or (eq "hostpath" .Values.persistence.type) (eq "nfs" .Values.persistence.type) }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.persistence.storageClassName }}
+  namespace: {{ .Release.Namespace }}
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+{{- end }}

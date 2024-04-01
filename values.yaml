@@ -1,0 +1,79 @@
+image:
+  repository: parasoft/dtp                                        # If using DTP with Extension Designer, set "image.repository" to "parasoft/dtp-extension-designer" and set "deployment.extensionDesigner.enabled" to "true"
+  tag: "2023.2.0"
+  pullPolicy: Always
+  pullSecret:
+  
+deployment:
+  extensionDesigner:
+    enabled: false                                                # If using DTP with Extension Designer, enable to deploy the Extension Designer container
+    externalMongoDb:
+      enabled: false                                              # Enable to use an external MongoDB database
+      hostname:
+      port:
+  jvmArgsDtp:
+    enabled: false                                                # Enable to inject JVM args into the DTP container environment 
+    value:                                                        # Example value: "-Dcom.parasoft.sdm.storage.managers.admin.enable.delete.project.data=true"
+  jvmArgsDc:
+    enabled: false                                                # Enable to inject JVM args into the Data Collector container environment
+    value:                                                        # Example value: "-Dcom.parasoft.sdm.dc.traffic.max.length=1000000"
+  customKeystore:
+    enabled: false                                                # Enable to use a custom keystore
+    cfgMapName: keystore-cfgmap                                   # Update if you created your keystore config map with a different name
+    keystoreSubPath: keystore                                     # Update if you created your keystore config map with a different key for the ".keystore" sub path
+    serverCfgSubPath: server-config                               # Update if you created your keystore config map with a different key for the "server.xml" sub path
+  customTruststore:
+    enabled: false                                                # Enable to use a custom truststore
+    cfgMapName: truststore-cfgmap                                 # Update if you created your truststore config map with a different name
+    truststoreSubPath: truststore                                 # Update if you created your truststore config map with a different key for the "cacerts" sub path
+# Specify database configuration settings to be injected into the DTP container environment as DB_TYPE, DB_USER, DB_PASSWORD,
+# DB_URL and JDBC_DRIVER_URL environment variables (see the "pod.yaml" template to find where these environment variables are
+# defined). To prevent exposing sensitive data, please create a secret for the database user password to use for the DB_PASSWORD
+# environment variable. Note that once a secret has been injected into the DTP container as an environment variable, then updating
+# the secret will not reflect inside the container unless it is restarted. Note that the DB_TYPE, DB_USER, DB_PASSWORD, and DB_URL
+# environment variables will override the equivalent persisted values in the PSTRootConfig.xml each time the container/pod is restarted.
+  db:
+    type:                                                         # Type must be one of: "mysql" | "oracle" | "postgresql"
+    user:                                                         # User must already exist with any necessary permissions granted to access the database
+    passwordSecret:                                               # Name of the secret created for the database user password
+    passwordSecretKey:                                            # Key for the database user password value specified for the secret
+    url:                                                          # The database specified in the URL must already exist, whether it is empty or already has initialized schema
+    jdbcDriverUrl:                                                # Download URL for the JDBC driver compatible with the database type and version being used
+  healthcheck:
+    enabled: true
+  restartPolicy: Always
+
+service:
+  enabled: true
+  httpNodePort: 30080                                             # Use any free port within the range 30000-32767
+  httpsNodePort: 30443                                            # Use any free port within the range 30000-32767
+  dcNodePort: 30082                                               # Use any free port within the range 30000-32767
+  depNodePort: 30314                                              # Use any free port within the range 30000-32767
+
+persistence:
+  name:                                                           # Set the name of the persistent volume claim you will be using
+
+# The following are example persistence values for a 2GB persistent volume claim which can be of type hostpath or nfs.
+# These values are used by the "pv.yaml", "pvc.yaml", and "storageclass.yaml" example templates, which are meant to
+# show how you can define your own persistent volume, persistent volume claim, and storage class. You may remove or
+# modify the values and templates to fit your own deployment needs.
+#  type: hostpath
+#  type: nfs
+#  storageClassName: dtp-storage
+#  accessMode: ReadWriteOnce
+#  capacity: 2Gi
+
+# The following are example hostpath and nfs specific values used by the "pv.yaml" and "pvc.yaml" example templates.
+# You may remove or modify the values and templates to fit your own deployment needs.
+#hostpath:
+#  path: "/path/to/volume"
+
+#nfs:
+#  server: "nfs-server.example.com"
+#  path: "/path/to/volume"
+
+# Note that using hostpath or nfs requires you to set up a directory with proper permissions on the host machine.
+# Example:
+#  sudo mkdir /data/dtp
+#  sudo chown 1000:1000 /data/dtp
+#  sudo ls -l /data
