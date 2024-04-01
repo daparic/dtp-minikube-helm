@@ -37,7 +37,7 @@ deployment:
     user: "root"
     passwordSecret: mysql-secret                                # Name of the secret created for the database user password
     passwordSecretKey: password                                 # Key for the database user password value specified for the secret
-    url: "jdbc:mysql://10.96.201.75:3306/dtp"                  # The database specified in the URL must already exist, whether it is empty or already has initialized schema
+    url: "jdbc:mysql://10.105.104.231:3306/dtp"                  # The database specified in the URL must already exist, whether it is empty or already has initialized schema
     jdbcDriverUrl: "https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar"
   healthcheck:
     enabled: true

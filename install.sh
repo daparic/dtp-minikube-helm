@@ -1,4 +1,4 @@
 #!/bin/sh
 #
 
-helm install dtp-helm . --namespace testpod --create-namespace
+helm install dtp-helm . --namespace parasoft-dtp-namespace --create-namespace
