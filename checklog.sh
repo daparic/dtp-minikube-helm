@@ -3,7 +3,7 @@
 
 alias kubectl='minikube kubectl --'
 
-kubectl get pod -n parasoft-dtp-namespace
+kubectl get pod -n parasoft-dtp-namespace | grep -w Running 
 while [ $? -ne 0 ];do
     kubectl get pod -n parasoft-dtp-namespace | grep -w Running 
     printf "."
@@ -11,4 +11,5 @@ while [ $? -ne 0 ];do
 done
 # kubectl logs dtp-helm-dtp-pod -n parasoft-dtp-namespace
 
+sleep 5
 minikube service dtp-service -n parasoft-dtp-namespace
